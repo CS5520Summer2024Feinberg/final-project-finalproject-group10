@@ -8,19 +8,25 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.group10_finalproject.models.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class CreateUserActivity extends AppCompatActivity {
 
     private FirebaseDatabase db;
     private DatabaseReference dbReference;
+    private boolean accountCreated = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,20 +55,38 @@ public class CreateUserActivity extends AppCompatActivity {
 
             User newUser = new User(emailText, usernameText, passwordText);
             createUser(newUser);
-
-            Toast.makeText(CreateUserActivity.this, "Account created!", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(CreateUserActivity.this, MainActivity.class);
-            startActivity(intent);
         });
 
     }
 
     private void createUser(User user) {
-        dbReference.child(user.getUserId()).setValue(user)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("DB", "User created!");
-                }).addOnFailureListener(e -> {
-                    Log.d("DB", "User creation failed!");
-                });
+        Query query = dbReference.orderByChild("username").equalTo(user.getUsername());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Toast.makeText(CreateUserActivity.this,
+                            "Username already exists! Please chose another.", Toast.LENGTH_LONG).show();
+                } else {
+                    dbReference.child(user.getUserId()).setValue(user)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(CreateUserActivity.this,
+                                        "Account created successfully!", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(CreateUserActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(CreateUserActivity.this,
+                                        "Failed to create account. Please try again.", Toast.LENGTH_LONG).show();
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("DB", "Database error: " + error.getMessage());
+                Toast.makeText(CreateUserActivity.this, "Database error. Please try again.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
