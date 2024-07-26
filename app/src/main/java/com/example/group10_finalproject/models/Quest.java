@@ -45,4 +45,8 @@ public class Quest {
 
     public List<QuestLocation> getLocations() { return this.locations; }
 
+    public void setLocations(List<QuestLocation> locations) {
+        this.locations = locations;
+    }
+
 }

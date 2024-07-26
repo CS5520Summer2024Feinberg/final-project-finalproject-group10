@@ -2,8 +2,7 @@ package com.example.group10_finalproject.models;
 
 public enum Status {
     DRAFT("draft"),
-    PUBLISHED("published"),
-    UNPUBLISHED("unpublished");
+    PUBLISHED("published");
 
     private final String value;
 

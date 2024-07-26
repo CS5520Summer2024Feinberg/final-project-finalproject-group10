@@ -26,7 +26,6 @@ public class CreateUserActivity extends AppCompatActivity {
 
     private FirebaseDatabase db;
     private DatabaseReference dbReference;
-    private boolean accountCreated = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

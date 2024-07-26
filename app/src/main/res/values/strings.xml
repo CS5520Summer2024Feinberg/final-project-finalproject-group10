@@ -47,4 +47,13 @@
     <string name="password">Password</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
+    <string name="title">Title</string>
+    <string name="location">Location</string>
+    <string name="description">Description</string>
+    <string name="publish_quest">Publish Quest</string>
+    <string name="save_draft">Save Draft</string>
+    <string name="add_location">Add Location</string>
+    <string name="create_your_adventure">Create your adventure:</string>
+    <string name="name">Name</string>
+    <string name="address">Address</string>
 </resources>

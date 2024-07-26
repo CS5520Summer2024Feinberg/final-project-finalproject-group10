@@ -17,6 +17,12 @@
         android:theme="@style/Theme.Group10FinalProject"
         tools:targetApi="31">
         <activity
+            android:name=".AddLocationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreateQuestActivity"
+            android:exported="false" />
+        <activity
             android:name=".UserHomeActivity"
             android:exported="false" />
         <activity
