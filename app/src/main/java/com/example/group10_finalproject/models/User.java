@@ -33,7 +33,7 @@ public class User {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.dateCreated = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);;
+        this.dateCreated = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         this.userId = UUID.randomUUID().toString();
         this.completedQuests = new ArrayList<>();
         this.createdQuests = new ArrayList<>();

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +30,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CreateQuestActivity extends AppCompatActivity {
 
@@ -89,7 +87,6 @@ public class CreateQuestActivity extends AppCompatActivity {
 
             Quest newQuest = new Quest(descriptionText, locationText, titleText, userId, Status.PUBLISHED, locations);
 
-            addQuestToUser(newQuest.getQuestId());
             createQuest(newQuest);
 
         });
@@ -98,48 +95,19 @@ public class CreateQuestActivity extends AppCompatActivity {
 
     private void createQuest(Quest quest) {
         Query query = dbReference.orderByChild("questId").equalTo(quest.getQuestId());
+        FirebaseDatabase userDB = FirebaseDatabase.getInstance();
+        DatabaseReference userDBReference = userDB.getReference("users");
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        Query userQuery = userDBReference.orderByChild("userId").equalTo(userId);
 
-                dbReference.child(quest.getQuestId()).setValue(quest)
-                        .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(CreateQuestActivity.this,
-                                    "Quest created successfully!", Toast.LENGTH_LONG).show();
-                            new Handler(Looper.getMainLooper()).post(() -> {
-                                Intent intent = new Intent(CreateQuestActivity.this, UserHomeActivity.class);
-                                startActivity(intent);
-                            });
-                        }).addOnFailureListener(e -> {
-                            Toast.makeText(CreateQuestActivity.this,
-                                    "Failed to create quest. Please try again.", Toast.LENGTH_LONG).show();
-                        });
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("DB", "Database error: " + error.getMessage());
-                Toast.makeText(CreateQuestActivity.this, "Database error. Please try again.", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void addQuestToUser(String questId) {
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference dbReference = db.getReference("users");
-
-        Query query = dbReference.orderByChild("userId").equalTo(userId);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                         User user = userSnapshot.getValue(User.class);
                         if (user != null) {
-                            user.addCreatedQuest(questId);
+                            user.addCreatedQuest(quest.getQuestId());
                             userSnapshot.getRef().setValue(user)
                                     .addOnSuccessListener(aVoid -> {
                                         Log.d("DB", "Quest added to user.");
@@ -156,6 +124,29 @@ public class CreateQuestActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("DB", "Database error: " + error.getMessage());
+            }
+        });
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                dbReference.child(quest.getQuestId()).setValue(quest)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(CreateQuestActivity.this,
+                                    "Quest created successfully!", Toast.LENGTH_LONG).show();
+                            finish();
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(CreateQuestActivity.this,
+                                    "Failed to create quest. Please try again.", Toast.LENGTH_LONG).show();
+                        });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("DB", "Database error: " + error.getMessage());
+                Toast.makeText(CreateQuestActivity.this, "Database error. Please try again.", Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -1,12 +1,13 @@
 package com.example.group10_finalproject.models;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 
 public class Quest {
     private String questId;
-    private LocalDateTime dateCreated;
+    private String dateCreated;
     private LocalDateTime datePublished;
     private String description;
     private String roughLocation;
@@ -18,7 +19,7 @@ public class Quest {
     public Quest(String description, String roughLocation, String title,
                  String creatorId, Status status, List<QuestLocation> locations) {
         this.questId = UUID.randomUUID().toString();
-        this.dateCreated = LocalDateTime.now();
+        this.dateCreated = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         this.description = description;
         this.roughLocation = roughLocation;
         this.title = title;
@@ -29,7 +30,7 @@ public class Quest {
 
     public String getQuestId() { return this.questId; }
 
-    public LocalDateTime getDateCreated() { return this.dateCreated; }
+    public String getDateCreated() { return this.dateCreated; }
 
     public LocalDateTime getDatePublished() { return this.datePublished; }
 
