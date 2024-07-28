@@ -15,6 +15,7 @@ public class QuestLocation implements Parcelable {
     private String imageId;
     private String specialNotes;
 
+
     public QuestLocation() {
         this.locationId = "";
         this.address = "";

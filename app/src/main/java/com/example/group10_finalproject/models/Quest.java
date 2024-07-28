@@ -16,6 +16,10 @@ public class Quest {
     private Status status;
     private List<QuestLocation> locations;
 
+    public Quest() {
+        // Firebase requires a no-argument constructor
+    }
+
     public Quest(String description, String roughLocation, String title,
                  String creatorId, Status status, List<QuestLocation> locations) {
         this.questId = UUID.randomUUID().toString();

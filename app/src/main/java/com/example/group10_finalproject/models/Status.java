@@ -18,4 +18,13 @@ public enum Status {
     public String toString() {
         return this.value;
     }
+
+    public static Status fromString(String text) {
+        for (Status s : Status.values()) {
+            if (s.value.equalsIgnoreCase(text)) {
+                return s;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found");
+    }
 }
