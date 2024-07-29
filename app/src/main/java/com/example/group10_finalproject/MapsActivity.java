@@ -9,12 +9,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-import android.widget.SearchView;
+//import android.widget.SearchView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -49,7 +50,7 @@ import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener{
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    protected static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final float MAX_QUEST_DISTANCE_MILES = 20;
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
