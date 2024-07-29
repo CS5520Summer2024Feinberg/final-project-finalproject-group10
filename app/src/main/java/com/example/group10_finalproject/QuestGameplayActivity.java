@@ -9,7 +9,10 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.group10_finalproject.models.Quest;
 import com.example.group10_finalproject.models.QuestLocation;
+import com.example.group10_finalproject.models.Review;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -270,23 +274,57 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
 
     private void showReviewForm() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-        input.setHint("Enter your review here");
-        builder.setView(input)
-                .setTitle("Write Your Review")
+        View view = getLayoutInflater().inflate(R.layout.dialog_review, null);
+        final EditText commentInput = view.findViewById(R.id.reviewComment);
+        final RatingBar ratingBar = view.findViewById(R.id.reviewRating);
+
+        ratingBar.setNumStars(5);
+        ratingBar.setStepSize(1);
+
+        builder.setView(view)
+                .setTitle("Rate and Review Quest")
                 .setPositiveButton("Submit", (dialog, which) -> {
-                    String review = input.getText().toString();
-                    submitReview(review);
+                    String comment = commentInput.getText().toString();
+                    int rating = Math.round(ratingBar.getRating());
+                    submitReview(comment, rating);
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> returnToMapsActivity())
                 .show();
     }
 
-    private void submitReview(String review) {
-        // TODO: Implement the logic to submit the review in backend
-        Toast.makeText(this, "Review submitted: " + review, Toast.LENGTH_SHORT).show();
-        returnToMapsActivity();
+    private void submitReview(String content, int rating) {
+        String userId = getCurrentUserId();
+        Review newReview = new Review(content, rating, currentQuest.getQuestId(), userId);
+
+        DatabaseReference reviewsReference = FirebaseDatabase.getInstance().getReference("reviews");
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+
+        reviewsReference.child(newReview.getReviewId()).setValue(newReview)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("DB", "Review added successfully.");
+
+                    userReference.child("reviews").child(newReview.getReviewId()).setValue(true)
+                            .addOnSuccessListener(aVoid1 -> {
+                                Log.d("DB", "Review added to user's list.");
+                                Toast.makeText(QuestGameplayActivity.this,
+                                        "Review submitted successfully!", Toast.LENGTH_LONG).show();
+                                returnToMapsActivity();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.d("DB", "Failed to add review to user's list: " + e.getMessage());
+                                Toast.makeText(QuestGameplayActivity.this,
+                                        "Failed to update user data. Please try again.", Toast.LENGTH_LONG).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.d("DB", "Failed to add review: " + e.getMessage());
+                    Toast.makeText(QuestGameplayActivity.this,
+                            "Failed to submit review. Please try again.", Toast.LENGTH_LONG).show();
+                });
+    }
+
+    private String getCurrentUserId() {
+       return getIntent().getStringExtra("userId");
     }
 
     private void returnToMapsActivity() {

@@ -62,6 +62,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private RecyclerView questList;
     private QuestAdapter questAdapter;
     private Location lastKnownLocation;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +102,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         searchView = findViewById(R.id.searchView);
         questList = findViewById(R.id.questList);
+
+        userId = getIntent().getStringExtra("userId");
 
         questList.setLayoutManager(new LinearLayoutManager(this));
         questAdapter = new QuestAdapter(new ArrayList<>(), this::showQuestDialog);
@@ -264,6 +267,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setPositiveButton("Start Quest", (dialog, which) -> {
                     // Start the new QuestGameplayActivity
                     Intent intent = new Intent(MapsActivity.this, QuestGameplayActivity.class);
+                    intent.putExtra("userId", userId);
                     intent.putExtra("QUEST_ID", quest.getQuestId());
                     startActivity(intent);
                 })

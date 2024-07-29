@@ -1,11 +1,12 @@
 package com.example.group10_finalproject.models;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class Review {
     private String reviewId;
-    private LocalDateTime dateCreated;
+    private String dateCreated;
     private String content;
     private int rating;
     private String questId;
@@ -13,7 +14,7 @@ public class Review {
 
     public Review(String content, int rating, String questId, String userId) {
         this.reviewId = UUID.randomUUID().toString();
-        this.dateCreated = LocalDateTime.now();
+        this.dateCreated = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         this.content = content;
         this.rating = rating;
         this.questId = questId;
@@ -24,7 +25,7 @@ public class Review {
         return this.reviewId;
     }
 
-    public LocalDateTime getDateCreated() {
+    public String getDateCreated() {
         return this.dateCreated;
     }
 

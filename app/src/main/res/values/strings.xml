@@ -56,4 +56,5 @@
     <string name="create_your_adventure">Create your adventure:</string>
     <string name="name">Name</string>
     <string name="address">Address</string>
+    <string name="enter_your_review_here">Enter your review here</string>
 </resources>

@@ -37,6 +37,7 @@ public class UserHomeActivity extends AppCompatActivity {
 
         exploreButton.setOnClickListener(v -> {
             Intent intent = new Intent(UserHomeActivity.this, MapsActivity.class);
+            intent.putExtra("userId", userId);
             startActivity(intent);
         });
 

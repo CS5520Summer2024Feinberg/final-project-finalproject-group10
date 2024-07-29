@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         Button createButton = findViewById(R.id.create_button);
         Button loginButton = findViewById(R.id.login_button);
 
+        // TODO: Delete this once done testing
         btnOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
