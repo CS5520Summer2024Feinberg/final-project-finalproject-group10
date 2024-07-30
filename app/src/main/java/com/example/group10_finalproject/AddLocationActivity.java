@@ -188,21 +188,18 @@ public class AddLocationActivity extends AppCompatActivity {
     private void onSubmit(String name, String address, String description) {
         showProgressDialog();
 
-        // Upload the image to Firebase Storage if an image was selected
         if (currentImage != null) {
             Log.d("DB", "We get here");
-            String imageId = currentImage.getImageId(); // Get the image ID
+            String imageId = currentImage.getImageId();
             StorageReference storageReference = firebaseStorage.getReference().child("images/" + imageId + ".jpg");
             storageReference.putFile(currentImage.getFileUri())
                     .addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
                         String imageUrl = uri.toString();
                         saveImageUrlToDatabase(imageUrl);
-                        // Proceed with creating the location
                         addLocation(name, address, description, imageId);
                     }))
                     .addOnFailureListener(e -> Toast.makeText(AddLocationActivity.this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
-            // Proceed with creating the location without an image
             addLocation(name, address, description, "");
         }
     }

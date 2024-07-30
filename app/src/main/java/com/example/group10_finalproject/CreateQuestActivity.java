@@ -216,20 +216,17 @@ public class CreateQuestActivity extends AppCompatActivity {
 
         showProgressDialog();
 
-        // Upload the image to Firebase Storage if an image was selected
         if (currentImage != null) {
-            String imageId = currentImage.getImageId(); // Get the image ID
+            String imageId = currentImage.getImageId();
             StorageReference storageReference = firebaseStorage.getReference().child("images/" + imageId + ".jpg");
             storageReference.putFile(currentImage.getFileUri())
                     .addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
                         String imageUrl = uri.toString();
                         saveImageUrlToDatabase(imageUrl);
-                        // Proceed with creating the quest
                         saveQuestToDatabase(quest, currentImage.getImageId());
                     }))
                     .addOnFailureListener(e -> Toast.makeText(CreateQuestActivity.this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
-            // Proceed with creating the quest without an image
             saveQuestToDatabase(quest, "");
         }
     }
