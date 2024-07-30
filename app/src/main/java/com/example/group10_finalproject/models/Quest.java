@@ -14,6 +14,7 @@ public class Quest {
     private String title;
     private String creatorId;
     private Status status;
+    private String imageId;
     private List<QuestLocation> locations;
 
     public Quest() {
@@ -30,6 +31,7 @@ public class Quest {
         this.creatorId = creatorId;
         this.status = status;
         this.locations = locations;
+        this.imageId = "";
     }
 
     public String getQuestId() { return this.questId; }
@@ -53,5 +55,9 @@ public class Quest {
     public void setLocations(List<QuestLocation> locations) {
         this.locations = locations;
     }
+
+    public void setImageId(String imageId) { this.imageId = imageId; }
+
+    public String getImageId() { return this.imageId; }
 
 }

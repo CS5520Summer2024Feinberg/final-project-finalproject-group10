@@ -7,39 +7,34 @@ import java.util.UUID;
 
 public class QuestLocation implements Parcelable {
     private String locationId;
+    private String imageId;
     private double latitude;
     private double longitude;
     private String address;
     private String name;
     private String description;
-    private String imageId;
     private String specialNotes;
 
 
     public QuestLocation() {
-        this.locationId = "";
-        this.address = "";
-        this.longitude = 0;
-        this.latitude = 0;
-        this.name = "";
-        this.description = "";
-        this.specialNotes = "";
+
     }
 
     protected QuestLocation(Parcel in) {
         locationId = in.readString();
+        imageId = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
         address = in.readString();
         name = in.readString();
         description = in.readString();
-        imageId = in.readString();
         specialNotes = in.readString();
     }
 
     public QuestLocation(String address, double longitude, double latitude, String name,
-                         String description, String specialNotes) {
+                         String description, String specialNotes, String imageId) {
         this.locationId = UUID.randomUUID().toString();
+        this.imageId = imageId;
         this.address = address;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -68,12 +63,12 @@ public class QuestLocation implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(locationId);
+        dest.writeString(imageId);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeString(address);
         dest.writeString(name);
         dest.writeString(description);
-        dest.writeString(imageId);
         dest.writeString(specialNotes);
     }
 

@@ -86,14 +86,14 @@
         app:layout_constraintTop_toBottomOf="@+id/create_quest_description_wrapper" />
 
     <Button
-        android:id="@+id/create_quest_draft"
+        android:id="@+id/create_quest_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:background="#483D8B"
-        android:text="@string/save_draft"
+        android:text="@string/add_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_quest_add_location" />
@@ -111,7 +111,7 @@
         android:text="@string/publish_quest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_quest_draft" />
+        app:layout_constraintTop_toBottomOf="@+id/create_quest_image" />
 
     <TextView
         android:id="@+id/textView2"
