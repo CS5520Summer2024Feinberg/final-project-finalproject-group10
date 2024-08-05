@@ -277,30 +277,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         questTitleTextView.setText(quest.getTitle());
         questDescriptionTextView.setText(quest.getDescription());
 
-        // Load image from Firebase Database
+        // Load image from Firebase Storage
         if (quest.getImageId() != null && !quest.getImageId().isEmpty()) {
-            Log.d("imageID: ", quest.getImageId());
-            DatabaseReference imagesRef = FirebaseDatabase.getInstance().getReference("images");
-            imagesRef.child(quest.getImageId()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    String imageUrl = dataSnapshot.getValue(String.class);
-                    if (imageUrl != null && !imageUrl.isEmpty()) {
-                        Glide.with(MapsActivity.this)
-                                .load(imageUrl)
-                                .placeholder(R.drawable.placeholder_image)
-                                .error(R.drawable.error_image)
-                                .into(questImageView);
-                    } else {
-                        questImageView.setImageResource(R.drawable.placeholder_image);
-                    }
-                }
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference imageRef = storage.getReference().child("images/" + quest.getImageId() + ".jpg");
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.e("MapsActivity", "Error loading quest image", databaseError.toException());
-                    questImageView.setImageResource(R.drawable.error_image);
-                }
+            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                Glide.with(MapsActivity.this)
+                        .load(uri)
+                        .placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.error_image)
+                        .into(questImageView);
+            }).addOnFailureListener(e -> {
+                Log.e("MapsActivity", "Error loading quest image", e);
+                questImageView.setImageResource(R.drawable.error_image);
             });
         } else {
             questImageView.setImageResource(R.drawable.placeholder_image);
