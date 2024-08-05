@@ -8,6 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 //import android.widget.SearchView;
 
@@ -43,6 +45,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -262,16 +268,53 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void showQuestDialog(Quest quest) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(quest.getTitle())
-                .setMessage(quest.getDescription())
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_quest_details, null);
+
+        ImageView questImageView = dialogView.findViewById(R.id.questImageView);
+        TextView questTitleTextView = dialogView.findViewById(R.id.questTitleTextView);
+        TextView questDescriptionTextView = dialogView.findViewById(R.id.questDescriptionTextView);
+
+        questTitleTextView.setText(quest.getTitle());
+        questDescriptionTextView.setText(quest.getDescription());
+
+        // Load image from Firebase Database
+        if (quest.getImageId() != null && !quest.getImageId().isEmpty()) {
+            Log.d("imageID: ", quest.getImageId());
+            DatabaseReference imagesRef = FirebaseDatabase.getInstance().getReference("images");
+            imagesRef.child(quest.getImageId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String imageUrl = dataSnapshot.getValue(String.class);
+                    if (imageUrl != null && !imageUrl.isEmpty()) {
+                        Glide.with(MapsActivity.this)
+                                .load(imageUrl)
+                                .placeholder(R.drawable.placeholder_image)
+                                .error(R.drawable.error_image)
+                                .into(questImageView);
+                    } else {
+                        questImageView.setImageResource(R.drawable.placeholder_image);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("MapsActivity", "Error loading quest image", databaseError.toException());
+                    questImageView.setImageResource(R.drawable.error_image);
+                }
+            });
+        } else {
+            questImageView.setImageResource(R.drawable.placeholder_image);
+        }
+
+        builder.setView(dialogView)
                 .setPositiveButton("Start Quest", (dialog, which) -> {
-                    // Start the new QuestGameplayActivity
                     Intent intent = new Intent(MapsActivity.this, QuestGameplayActivity.class);
                     intent.putExtra("userId", userId);
                     intent.putExtra("QUEST_ID", quest.getQuestId());
                     startActivity(intent);
                 })
                 .setNegativeButton("Back", (dialog, which) -> dialog.dismiss());
+
         builder.create().show();
     }
 
