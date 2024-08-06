@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.group10_finalproject.models.Quest;
 import com.example.group10_finalproject.models.QuestLocation;
+import com.example.group10_finalproject.models.Review;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -273,6 +274,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ImageView questImageView = dialogView.findViewById(R.id.questImageView);
         TextView questTitleTextView = dialogView.findViewById(R.id.questTitleTextView);
         TextView questDescriptionTextView = dialogView.findViewById(R.id.questDescriptionTextView);
+        TextView questRatingTextView = dialogView.findViewById(R.id.questRatingTextView);
 
         questTitleTextView.setText(quest.getTitle());
         questDescriptionTextView.setText(quest.getDescription());
@@ -283,7 +285,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             StorageReference imageRef = storage.getReference().child("images/" + quest.getImageId() + ".jpg");
 
             imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                Glide.with(MapsActivity.this)
+                Glide.with(this)
                         .load(uri)
                         .placeholder(R.drawable.placeholder_image)
                         .error(R.drawable.error_image)
@@ -296,6 +298,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             questImageView.setImageResource(R.drawable.placeholder_image);
         }
 
+        // Fetch and display average rating
+        fetchAverageRating(quest.getQuestId(), (averageRating, hasRatings) -> {
+            String ratingText = hasRatings
+                    ? String.format("Average Rating: %.2f / 5", averageRating)
+                    : "Average Rating: NA";
+            questRatingTextView.setText(ratingText);
+        });
+
         builder.setView(dialogView)
                 .setPositiveButton("Start Quest", (dialog, which) -> {
                     Intent intent = new Intent(MapsActivity.this, QuestGameplayActivity.class);
@@ -306,6 +316,40 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setNegativeButton("Back", (dialog, which) -> dialog.dismiss());
 
         builder.create().show();
+    }
+
+    public void fetchAverageRating(String questId, OnRatingFetchedListener listener) {
+        DatabaseReference reviewsRef = FirebaseDatabase.getInstance().getReference("reviews");
+        reviewsRef.orderByChild("questId").equalTo(questId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int totalRating = 0;
+                int count = 0;
+                for (DataSnapshot reviewSnapshot : dataSnapshot.getChildren()) {
+                    Review review = reviewSnapshot.getValue(Review.class);
+                    if (review != null) {
+                        totalRating += review.getRating();
+                        count++;
+                    }
+                }
+                if (count > 0) {
+                    float averageRating = (float) totalRating / count;
+                    listener.onRatingFetched(averageRating, true);
+                } else {
+                    listener.onRatingFetched(0, false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("MapsActivity", "Error fetching reviews", databaseError.toException());
+                listener.onRatingFetched(0, false);
+            }
+        });
+    }
+
+    public interface OnRatingFetchedListener {
+        void onRatingFetched(float averageRating, boolean hasRatings);
     }
 
     @Override
