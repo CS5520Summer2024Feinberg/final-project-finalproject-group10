@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -313,9 +314,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     intent.putExtra("QUEST_ID", quest.getQuestId());
                     startActivity(intent);
                 })
-                .setNegativeButton("Back", (dialog, which) -> dialog.dismiss());
+                .setNegativeButton("Back", (dialog, which) -> dialog.dismiss())
+                .setNeutralButton("Reviews", (dialog, which) -> {
+                    Intent intent = new Intent(MapsActivity.this, ReviewsActivity.class);
+                    intent.putExtra("QUEST_ID", quest.getQuestId());
+                    intent.putExtra("QUEST_TITLE", quest.getTitle());
+                    startActivity(intent);
+                });
 
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void fetchAverageRating(String questId, OnRatingFetchedListener listener) {
