@@ -34,6 +34,7 @@ public class UserHomeActivity extends AppCompatActivity {
         Button exploreButton = findViewById(R.id.home_explore_button);
         Button questsButton = findViewById(R.id.home_quests_buton);
         Button createButton = findViewById(R.id.home_create_button);
+        Button galleryButton = findViewById(R.id.home_gallery_button);
 
         exploreButton.setOnClickListener(v -> {
             Intent intent = new Intent(UserHomeActivity.this, MapsActivity.class);
@@ -43,6 +44,18 @@ public class UserHomeActivity extends AppCompatActivity {
 
         createButton.setOnClickListener(v -> {
             Intent intent = new Intent(UserHomeActivity.this, CreateQuestActivity.class);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        });
+
+        questsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(UserHomeActivity.this, UserQuestsActivity.class);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        });
+
+        galleryButton.setOnClickListener(v -> {
+            Intent intent = new Intent(UserHomeActivity.this, UserGalleryActivity.class);
             intent.putExtra("userId", userId);
             startActivity(intent);
         });

@@ -23,6 +23,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Group10FinalProject"
         tools:targetApi="31">
+        <activity
+            android:name=".UserQuestsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserGalleryActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -53,9 +59,6 @@
         <activity
             android:name=".CreateUserActivity"
             android:exported="false" />
-
-
-
         <activity
             android:name=".MapsActivity"
             android:exported="false"

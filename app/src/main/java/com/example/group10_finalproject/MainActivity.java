@@ -43,18 +43,18 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseDatabase.getInstance();
         dbReference = db.getReference("users");
 
-        Button btnOpenMap = findViewById(R.id.map);
+//        Button btnOpenMap = findViewById(R.id.map);
         Button createButton = findViewById(R.id.create_button);
         Button loginButton = findViewById(R.id.login_button);
 
         // TODO: Delete this once done testing
-        btnOpenMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                startActivity(intent);
-            }
-        });
+//        btnOpenMap.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         createButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CreateUserActivity.class);
