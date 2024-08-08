@@ -41,7 +41,12 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC_87EH8EDiq_egUN_c8BKzOv164BepGAg" />
-
+        <activity
+            android:name=".UserGalleryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserQuestsActivity"
+            android:exported="false" />
         <activity
             android:name=".QuestGameplayActivity"
             android:exported="false" />
