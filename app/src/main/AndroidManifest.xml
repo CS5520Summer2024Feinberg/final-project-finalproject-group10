@@ -23,11 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Group10FinalProject"
         tools:targetApi="31">
+
         <activity
-            android:name=".UserQuestsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".UserGalleryActivity"
+            android:name=".ReviewsActivity"
             android:exported="false" />
 
         <provider

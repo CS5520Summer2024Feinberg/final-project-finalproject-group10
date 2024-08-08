@@ -12,6 +12,10 @@ public class Review {
     private String questId;
     private String userId;
 
+    public Review() {
+        // Firebase requires a no-argument constructor
+    }
+
     public Review(String content, int rating, String questId, String userId) {
         this.reviewId = UUID.randomUUID().toString();
         this.dateCreated = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);

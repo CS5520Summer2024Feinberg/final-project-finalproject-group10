@@ -12,6 +12,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.group10_finalproject.models.Quest;
 import com.example.group10_finalproject.models.QuestLocation;
 import com.example.group10_finalproject.models.Review;
@@ -45,6 +47,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -235,8 +239,35 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
 
     private void showLocationDialog(QuestLocation location, boolean allowProgress) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(location.getName())
-                .setMessage(location.getDescription());
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_location_details, null);
+
+        ImageView locationImageView = dialogView.findViewById(R.id.locationImageView);
+        TextView locationTitleTextView = dialogView.findViewById(R.id.locationTitleTextView);
+        TextView locationDescriptionTextView = dialogView.findViewById(R.id.locationDescriptionTextView);
+
+        locationTitleTextView.setText(location.getName());
+        locationDescriptionTextView.setText(location.getDescription());
+
+        // Load image from Firebase Storage
+        if (location.getImageId() != null && !location.getImageId().isEmpty()) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference imageRef = storage.getReference().child("images/" + location.getImageId() + ".jpg");
+
+            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                Glide.with(this)
+                        .load(uri)
+                        .placeholder(R.drawable.placeholder_image)
+                        .error(R.drawable.error_image)
+                        .into(locationImageView);
+            }).addOnFailureListener(e -> {
+                Log.e("QuestGameplayActivity", "Error loading location image", e);
+                locationImageView.setImageResource(R.drawable.error_image);
+            });
+        } else {
+            locationImageView.setImageResource(R.drawable.placeholder_image);
+        }
+
+        builder.setView(dialogView);
 
         if (allowProgress) {
             String buttonText = (currentLocationIndex == questLocations.size() - 1) ? "Finish" : "Next Location";
