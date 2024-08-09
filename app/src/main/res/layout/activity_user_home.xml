@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:background="#87CEFA"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -16,39 +16,40 @@
 
     <Button
         android:id="@+id/home_account_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:textSize="20sp"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:background="#483D8B"
+        android:background="@drawable/custom_button"
+        app:backgroundTint="@null"
         android:text="Account"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_gallery_button" />
 
     <Button
         android:id="@+id/home_explore_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:textSize="20sp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:background="#483D8B"
+        android:background="@drawable/custom_button"
+        app:backgroundTint="@null"
         android:text="Explore"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <Button
         android:id="@+id/home_quests_buton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:textSize="20sp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:background="#483D8B"
+        android:background="@drawable/custom_button"
+        app:backgroundTint="@null"
         android:text="Edit Quests"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,12 +57,14 @@
 
     <Button
         android:id="@+id/home_create_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:textSize="20sp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:background="#483D8B"
+        android:background="@drawable/custom_button"
+        app:backgroundTint="@null"
         android:text="Create Quest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,15 +72,31 @@
 
     <Button
         android:id="@+id/home_gallery_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:textSize="20sp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:background="#483D8B"
+        android:background="@drawable/custom_button"
+        app:backgroundTint="@null"
         android:text="Gallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_create_button" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="#008B8B"
+        android:gravity="center"
+        android:text="@string/home"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

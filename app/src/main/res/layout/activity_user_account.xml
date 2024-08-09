@@ -13,21 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:hint="@string/username"
-        app:startIconDrawable="@drawable/android_user_32"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:startIconDrawable="@drawable/android_user_32">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_user_username_input"
-            android:paddingStart="48dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:paddingStart="48dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -77,16 +76,30 @@
 
     <Button
         android:id="@+id/save_changes_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:background="#483D8B"
-        android:textSize="16sp"
+        android:background="@drawable/custom_button"
         android:text="Save Changes"
+        android:textSize="16sp"
+        app:backgroundTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_user_password_wrapper" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:background="#008B8B"
+        android:textSize="24sp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Edit Profile Settings:"
+        android:textColor="@color/white"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
