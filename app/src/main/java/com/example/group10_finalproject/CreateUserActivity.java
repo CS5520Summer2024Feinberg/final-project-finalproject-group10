@@ -52,6 +52,21 @@ public class CreateUserActivity extends AppCompatActivity {
             String emailText = String.valueOf(email.getText());
             String passwordText = String.valueOf(password.getText());
 
+            if (usernameText.trim().isEmpty()) {
+                Toast.makeText(this, "Username field cannot be empty..", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (emailText.trim().isEmpty()) {
+                Toast.makeText(this, "Email field cannot be empty..", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (passwordText.trim().isEmpty()) {
+                Toast.makeText(this, "Password field cannot be empty..", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             User newUser = new User(emailText, usernameText, passwordText);
             createUser(newUser);
         });

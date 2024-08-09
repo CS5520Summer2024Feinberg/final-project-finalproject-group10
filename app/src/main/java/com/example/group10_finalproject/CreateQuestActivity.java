@@ -112,6 +112,26 @@ public class CreateQuestActivity extends AppCompatActivity {
             String locationText = String.valueOf(location.getText());
             String descriptionText = String.valueOf(description.getText());
 
+            if (titleText.trim().isEmpty()) {
+                Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (locationText.trim().isEmpty()) {
+                Toast.makeText(this, "Location cannot be empty", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (descriptionText.trim().isEmpty()) {
+                Toast.makeText(this, "Description cannot be empty", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (locations.size() == 0) {
+                Toast.makeText(this, "Quests must have at least 1 location", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             Quest newQuest = new Quest(descriptionText, locationText, titleText, userId, Status.PUBLISHED, locations);
 
             createQuest(newQuest);

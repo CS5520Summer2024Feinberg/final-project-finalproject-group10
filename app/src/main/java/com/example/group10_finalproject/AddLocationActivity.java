@@ -186,6 +186,23 @@ public class AddLocationActivity extends AppCompatActivity {
     }
 
     private void onSubmit(String name, String address, String description) {
+
+        if (name.trim().isEmpty()) {
+            Toast.makeText(this, "Location name cannot be empty..", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (address.trim().isEmpty()) {
+            Toast.makeText(this, "Address cannot be empty..", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (description.trim().isEmpty()) {
+            Toast.makeText(this, "Description cannot be empty..", Toast.LENGTH_LONG).show();
+            return;
+
+        }
+
         showProgressDialog();
 
         if (currentImage != null) {
