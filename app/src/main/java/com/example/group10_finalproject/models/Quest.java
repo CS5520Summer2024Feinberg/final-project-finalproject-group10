@@ -42,9 +42,15 @@ public class Quest {
 
     public String getDescription() { return this.description; }
 
+    public void setDescription(String description) { this.description = description; }
+
     public String getRoughLocation() { return this.roughLocation; }
 
+    public void setRoughLocation(String location) { this.roughLocation = location; }
+
     public String getTitle() { return this.title; }
+
+    public void setTitle(String title) { this.title = title; }
 
     public String getCreatorId() { return this.creatorId; }
 

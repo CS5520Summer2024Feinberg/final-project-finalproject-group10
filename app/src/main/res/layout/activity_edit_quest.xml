@@ -6,94 +6,96 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/main"
     android:background="#87CEFA"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateUserActivity">
+    tools:context=".EditQuestActivity">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/create_user_username_wrapper"
+    <TextView
+        android:id="@+id/textView6"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:hint="@string/username"
-        app:startIconDrawable="@drawable/android_user_32"
-        app:endIconMode="clear_text"
+        android:layout_height="60dp"
+        android:background="#008B8B"
+        android:gravity="center"
+        android:text="Edit Quest:"
+        android:textColor="@color/white"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_layout_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Title"
+        app:startIconDrawable="@drawable/android_title_32"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/create_user_username_input"
-            android:paddingStart="48dp"
+            android:id="@+id/edit_quest_name_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:paddingStart="48dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/create_user_email_wrapper"
+        android:id="@+id/text_layout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:startIconDrawable="@drawable/android_location_32"
+        android:hint="Location"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
-        android:hint="@string/email"
-        app:startIconDrawable="@drawable/android_email_32"
-        app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_user_username_wrapper">
+        app:layout_constraintTop_toBottomOf="@+id/text_layout_1">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/create_user_email_input"
-            android:paddingStart="48dp"
+            android:id="@+id/edit_quest_location_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:paddingStart="48dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/create_user_password_wrapper"
+        android:id="@+id/text_layout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="Description"
+        app:startIconDrawable="@drawable/android_description_32"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
-        android:hint="@string/password"
-        app:startIconDrawable="@drawable/android_lock_32"
-        app:endIconMode="password_toggle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_user_email_wrapper">
+        app:layout_constraintTop_toBottomOf="@+id/text_layout2">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/create_user_password_input"
-            android:paddingStart="48dp"
+            android:id="@+id/edit_quest_description_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:paddingStart="48dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/create_user_button"
+        android:id="@+id/edit_quest_save_button"
         android:layout_width="250dp"
         android:layout_height="60dp"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
         android:background="@drawable/custom_button"
         app:backgroundTint="@null"
-        android:text="Create"
-        android:textSize="16sp"
+        android:text="Save Changes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_user_password_wrapper" />
+        app:layout_constraintTop_toBottomOf="@+id/text_layout3" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
