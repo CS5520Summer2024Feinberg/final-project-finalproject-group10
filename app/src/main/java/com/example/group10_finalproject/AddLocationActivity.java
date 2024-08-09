@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,8 +29,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.group10_finalproject.models.Image;
 import com.example.group10_finalproject.models.QuestLocation;
+import com.example.group10_finalproject.models.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -179,6 +184,30 @@ public class AddLocationActivity extends AppCompatActivity {
 
     private void saveImageUrlToDatabase(String imageUrl) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("images");
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("users").child(userId);
+
+        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    User user = snapshot.getValue(User.class);
+                    if (user != null) {
+                        List<String> media = user.getMedia();
+                        media.add(currentImage.getImageId());
+
+                        userReference.child("media").setValue(media)
+                                .addOnSuccessListener(aVoid -> Log.d("DB", "media updated"))
+                                .addOnFailureListener(e -> Log.d("DB", "Image adding failure"));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("DB", "Database error: " + error.getMessage());
+            }
+        });
+
         String uploadId = databaseReference.push().getKey();
         if (uploadId != null) {
             databaseReference.child(uploadId).setValue(imageUrl);
@@ -237,6 +266,7 @@ public class AddLocationActivity extends AppCompatActivity {
                 Log.d("DB", "Longitude: " + longitude);
             } else {
                 Toast.makeText(this, "Unable to find location...", Toast.LENGTH_LONG).show();
+                finish();
             }
         } catch (IOException e) {
             e.printStackTrace();

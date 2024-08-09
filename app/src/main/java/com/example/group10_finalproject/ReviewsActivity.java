@@ -52,7 +52,7 @@ public class ReviewsActivity extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(questTitle + " Reviews");
+            getSupportActionBar().setTitle("Reviews");
         }
 
         reviewsRecyclerView = findViewById(R.id.reviewsRecyclerView);

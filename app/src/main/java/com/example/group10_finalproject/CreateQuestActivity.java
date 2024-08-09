@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.Manifest;
 
@@ -26,6 +28,8 @@ import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.group10_finalproject.models.Image;
 import com.example.group10_finalproject.models.Quest;
@@ -59,6 +63,7 @@ public class CreateQuestActivity extends AppCompatActivity {
     private String currentPhotoPath;
     private Image currentImage;
     private AlertDialog progressDialog;
+    private QuestLocationAdapter adapter;
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
     private static final int REQUEST_PERMISSION = 100;
@@ -70,6 +75,11 @@ public class CreateQuestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_quest);
 
         locations = new ArrayList<>();
+
+        if (savedInstanceState != null) {
+            locations = savedInstanceState.getParcelableArrayList("locations");
+        }
+
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference().child("images");
         db = FirebaseDatabase.getInstance();
@@ -82,13 +92,20 @@ public class CreateQuestActivity extends AppCompatActivity {
         });
 
         userId = getIntent().getStringExtra("userId");
-        Log.d("DB", userId);
+
+        RecyclerView recyclerView = findViewById(R.id.locations_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new QuestLocationAdapter(locations);
+        recyclerView.setAdapter(adapter);
 
         activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        locations = result.getData().getParcelableArrayListExtra("locations");
+//                        locations = result.getData().getParcelableArrayListExtra("locations");
+                        locations.clear();
+                        locations.addAll(result.getData().getParcelableArrayListExtra("locations"));
+                        adapter.notifyDataSetChanged();
                     }
                 }
         );
@@ -143,6 +160,21 @@ public class CreateQuestActivity extends AppCompatActivity {
 
         checkPermissions();
 
+    }
+
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList("locations", locations);
+    }
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            locations = savedInstanceState.getParcelableArrayList("locations");
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void checkPermissions() {
