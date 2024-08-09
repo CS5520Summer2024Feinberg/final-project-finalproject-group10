@@ -23,7 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Group10FinalProject"
         tools:targetApi="31">
-
+        <activity
+            android:name=".UserAccountActivity"
+            android:exported="false" />
         <activity
             android:name=".ReviewsActivity"
             android:exported="false" />
@@ -41,6 +43,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC_87EH8EDiq_egUN_c8BKzOv164BepGAg" />
+
         <activity
             android:name=".UserGalleryActivity"
             android:exported="false" />

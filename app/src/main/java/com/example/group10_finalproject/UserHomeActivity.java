@@ -11,8 +11,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.group10_finalproject.models.User;
-
 public class UserHomeActivity extends AppCompatActivity {
 
     private String userId;
@@ -35,6 +33,7 @@ public class UserHomeActivity extends AppCompatActivity {
         Button questsButton = findViewById(R.id.home_quests_buton);
         Button createButton = findViewById(R.id.home_create_button);
         Button galleryButton = findViewById(R.id.home_gallery_button);
+        Button accountButton = findViewById(R.id.home_account_button);
 
         exploreButton.setOnClickListener(v -> {
             Intent intent = new Intent(UserHomeActivity.this, MapsActivity.class);
@@ -56,6 +55,12 @@ public class UserHomeActivity extends AppCompatActivity {
 
         galleryButton.setOnClickListener(v -> {
             Intent intent = new Intent(UserHomeActivity.this, UserGalleryActivity.class);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        });
+
+        accountButton.setOnClickListener(v -> {
+            Intent intent = new Intent(UserHomeActivity.this, UserAccountActivity.class);
             intent.putExtra("userId", userId);
             startActivity(intent);
         });
