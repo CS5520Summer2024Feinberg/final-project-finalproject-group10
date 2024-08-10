@@ -3,14 +3,19 @@ package com.example.group10_finalproject;
 import static com.example.group10_finalproject.MapsActivity.LOCATION_PERMISSION_REQUEST_CODE;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -19,13 +24,17 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.group10_finalproject.models.Image;
 import com.example.group10_finalproject.models.Quest;
 import com.example.group10_finalproject.models.QuestLocation;
 import com.example.group10_finalproject.models.Review;
@@ -50,8 +59,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class QuestGameplayActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -74,6 +88,15 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
     private boolean dialogShownForCurrentLocation = false;
     private Location lastKnownLocation;
 
+    private static final int REQUEST_CAMERA = 1;
+    private static final int SELECT_FILE = 2;
+    private static final int REQUEST_PERMISSION = 100;
+    private String currentPhotoPath;
+    private Image currentImage;
+    private FirebaseStorage firebaseStorage;
+    private StorageReference storageReference;
+    private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +112,7 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
         currentLocationTextView = findViewById(R.id.currentLocationTextView);
 
         questId = getIntent().getStringExtra("QUEST_ID");
+        userId = getCurrentUserId();
 
         db = FirebaseDatabase.getInstance();
         questsReference = db.getReference("quests");
@@ -102,6 +126,11 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
         }
 
         loadQuestData();
+
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageReference = firebaseStorage.getReference().child("images");
+
+        checkPermissions();
     }
 
     private void loadQuestData() {
@@ -244,6 +273,8 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
         ImageView locationImageView = dialogView.findViewById(R.id.locationImageView);
         TextView locationTitleTextView = dialogView.findViewById(R.id.locationTitleTextView);
         TextView locationDescriptionTextView = dialogView.findViewById(R.id.locationDescriptionTextView);
+        Button takePictureButton = dialogView.findViewById(R.id.takePictureButton);
+        takePictureButton.setOnClickListener(v -> selectImage());
 
         locationTitleTextView.setText(location.getName());
         locationDescriptionTextView.setText(location.getDescription());
@@ -284,6 +315,130 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
         }
 
         builder.create().show();
+    }
+
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
+        }
+    }
+
+    private void selectImage() {
+        final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Cancel"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(QuestGameplayActivity.this);
+        builder.setTitle("Add Photo");
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals("Take Photo")) {
+                dispatchTakePictureIntent();
+            } else if (options[item].equals("Choose from Gallery")) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, SELECT_FILE);
+            } else if (options[item].equals("Cancel")) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this, "com.example.group10_finalproject.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_CAMERA);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = userId + "_" + questId + "_" + timeStamp;
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CAMERA) {
+                File file = new File(currentPhotoPath);
+                Uri uri = Uri.fromFile(file);
+                currentImage = new Image(userId, currentPhotoPath, uri);
+                uploadImageToFirebase(currentImage);
+            } else if (requestCode == SELECT_FILE && data != null) {
+                Uri selectedImageUri = data.getData();
+                currentImage = new Image(userId, selectedImageUri.getPath(), selectedImageUri);
+                uploadImageToFirebase(currentImage);
+            }
+        }
+    }
+
+    private void uploadImageToFirebase(Image image) {
+        String imageId = UUID.randomUUID().toString();
+        StorageReference imageRef = storageReference.child(imageId + ".jpg");
+
+        imageRef.putFile(image.getFileUri())
+                .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String imageUrl = uri.toString();
+                    saveImageUrlToDatabase(imageUrl, imageId);
+                    updateUserMedia(imageId);
+                    Toast.makeText(QuestGameplayActivity.this, "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                }))
+                .addOnFailureListener(e -> Toast.makeText(QuestGameplayActivity.this, "Image upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void saveImageUrlToDatabase(String imageUrl, String imageId) {
+        DatabaseReference imagesRef = FirebaseDatabase.getInstance().getReference("images");
+        imagesRef.child(imageId).setValue(imageUrl);
+    }
+
+    private void updateUserMedia(String imageId) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        userRef.child("media").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> mediaList = new ArrayList<>();
+                for (DataSnapshot mediaSnapshot : dataSnapshot.getChildren()) {
+                    String mediaItem = mediaSnapshot.getValue(String.class);
+                    if (mediaItem != null) {
+                        mediaList.add(mediaItem);
+                    }
+                }
+                mediaList.add(imageId);
+                userRef.child("media").setValue(mediaList)
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d("QuestGameplayActivity", "Media list updated successfully");
+                            Toast.makeText(QuestGameplayActivity.this, "Image saved to your gallery", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e("QuestGameplayActivity", "Failed to update media list", e);
+                            Toast.makeText(QuestGameplayActivity.this, "Failed to save image to your gallery", Toast.LENGTH_SHORT).show();
+                        });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("QuestGameplayActivity", "Error fetching media list", databaseError.toException());
+                Toast.makeText(QuestGameplayActivity.this, "Failed to update gallery: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void moveToNextLocation() {
