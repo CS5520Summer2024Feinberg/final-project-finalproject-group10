@@ -47,6 +47,7 @@ public class EditQuestAdapter extends RecyclerView.Adapter<EditQuestAdapter.Ques
             intent.putExtra("description", quest.getDescription());
             intent.putExtra("questId", quest.getQuestId());
             intent.putExtra("userId", quest.getCreatorId());
+            intent.putParcelableArrayListExtra("locations", quest.getLocations());
             context.startActivity(intent);
         });
     }

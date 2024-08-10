@@ -14,20 +14,25 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.group10_finalproject.models.Quest;
+import com.example.group10_finalproject.models.QuestLocation;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class EditQuestActivity extends AppCompatActivity {
 
     private String title;
     private String location;
     private String description;
+    private ArrayList<QuestLocation> locations;
     private String questId;
     private String userId;
     private Button saveButton;
+    private Button locationsButton;
     private FirebaseDatabase db;
     private DatabaseReference dbRef;
 
@@ -43,6 +48,7 @@ public class EditQuestActivity extends AppCompatActivity {
         title = getIntent().getStringExtra("title");
         location = getIntent().getStringExtra("location");
         description = getIntent().getStringExtra("description");
+        locations = getIntent().getParcelableArrayListExtra("locations");
         questId = getIntent().getStringExtra("questId");
         userId = getIntent().getStringExtra("userId");
 
@@ -50,6 +56,14 @@ public class EditQuestActivity extends AppCompatActivity {
         EditText locationInput = findViewById(R.id.edit_quest_location_input);
         EditText descriptionInput = findViewById(R.id.edit_quest_description_input);
         saveButton = findViewById(R.id.edit_quest_save_button);
+        locationsButton = findViewById(R.id.edit_location_button);
+
+        locationsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EditLocationActivity.class);
+            intent.putParcelableArrayListExtra("locations", locations);
+            startActivity(intent);
+        });
+
 
         saveButton.setOnClickListener(v -> {
             String updatedTitle = titleInput.getText().toString().trim();

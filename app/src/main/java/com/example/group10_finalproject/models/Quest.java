@@ -2,6 +2,7 @@ package com.example.group10_finalproject.models;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,14 +16,14 @@ public class Quest {
     private String creatorId;
     private Status status;
     private String imageId;
-    private List<QuestLocation> locations;
+    private ArrayList<QuestLocation> locations;
 
     public Quest() {
         // Firebase requires a no-argument constructor
     }
 
     public Quest(String description, String roughLocation, String title,
-                 String creatorId, Status status, List<QuestLocation> locations) {
+                 String creatorId, Status status, ArrayList<QuestLocation> locations) {
         this.questId = UUID.randomUUID().toString();
         this.dateCreated = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         this.description = description;
@@ -56,9 +57,9 @@ public class Quest {
 
     public Status getStatus() { return this.status; }
 
-    public List<QuestLocation> getLocations() { return this.locations; }
+    public ArrayList<QuestLocation> getLocations() { return this.locations; }
 
-    public void setLocations(List<QuestLocation> locations) {
+    public void setLocations(ArrayList<QuestLocation> locations) {
         this.locations = locations;
     }
 

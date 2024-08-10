@@ -90,11 +90,25 @@
         android:id="@+id/edit_quest_save_button"
         android:layout_width="250dp"
         android:layout_height="60dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/custom_button"
+        android:text="Save Changes"
+        app:backgroundTint="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_location_button" />
+
+    <Button
+        android:id="@+id/edit_location_button"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/custom_button"
+        android:text="Edit Locations"
         app:backgroundTint="@null"
-        android:text="Save Changes"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_layout3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

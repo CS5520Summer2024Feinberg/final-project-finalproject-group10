@@ -76,13 +76,23 @@ public class QuestLocation implements Parcelable {
 
     public double getLatitude() { return this.latitude; }
 
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+
     public double getLongitude() { return this.longitude; }
+
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 
     public String getAddress() { return this.address; }
 
+    public void setAddress(String address) { this.address = address; }
+
     public String getName() { return this.name; }
 
+    public void setName(String name) { this.name = name; }
+
     public String getDescription() { return this.description; }
+
+    public void setDescription(String description) { this.description = description; }
 
     public String getImageId() { return this.imageId; }
 
