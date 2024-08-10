@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -314,7 +316,14 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
             builder.setNeutralButton("OK", (dialog, which) -> dialog.dismiss());
         }
 
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#008B8B"));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#008B8B"));
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.parseColor("#008B8B"));
+
+
     }
 
     private void checkPermissions() {
@@ -452,15 +461,28 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Quest Completed!")
                 .setMessage("Would you like to leave a review?")
-                .setPositiveButton("Leave Review", (dialog, which) -> showReviewForm())
-                .setNegativeButton("No, thank you", (dialog, which) -> returnToMapsActivity())
-                .setCancelable(false)
-                .show();
+                .setPositiveButton("Leave Review", (dialog, which) -> {
+                    dialog.dismiss();
+                    showReviewForm();
+                })
+                .setNegativeButton("No, thank you", (dialog, which) -> {
+                    dialog.dismiss();
+                    returnToMapsActivity();
+                })
+                .setCancelable(false);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#008B8B"));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#008B8B"));
     }
 
     private void showReviewForm() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        View view = getLayoutInflater().inflate(R.layout.dialog_review, null);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_review, null);
+
         final EditText commentInput = view.findViewById(R.id.reviewComment);
         final RatingBar ratingBar = view.findViewById(R.id.reviewRating);
 
@@ -474,12 +496,26 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
                     int rating = Math.round(ratingBar.getRating());
                     submitReview(comment, rating);
                 })
-                .setNegativeButton("Cancel", (dialog, which) -> returnToMapsActivity())
-                .show();
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.dismiss();
+                    returnToMapsActivity();
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#008B8B"));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#008B8B"));
     }
 
     private void submitReview(String content, int rating) {
         String userId = getCurrentUserId();
+        if (userId == null || userId.isEmpty()) {
+            Toast.makeText(this, "Error: User ID not available", Toast.LENGTH_LONG).show();
+            Log.e("QuestGameplayActivity", "Attempted to submit review with null or empty userId");
+            return;
+        }
+
         Review newReview = new Review(content, rating, currentQuest.getQuestId(), userId);
 
         DatabaseReference reviewsReference = FirebaseDatabase.getInstance().getReference("reviews");
@@ -514,6 +550,9 @@ public class QuestGameplayActivity extends AppCompatActivity implements OnMapRea
     }
 
     private void returnToMapsActivity() {
+        if (isFinishing()) {
+            return;  // If already finishing, don't start a new activity
+        }
         Intent intent = new Intent(QuestGameplayActivity.this, MapsActivity.class);
         startActivity(intent);
         finish();
