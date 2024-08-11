@@ -31,10 +31,8 @@ public class QuestLocationAdapter extends RecyclerView.Adapter<QuestLocationAdap
     public void onBindViewHolder(QuestLocationAdapter.LocationViewHolder viewHolder, int i) {
         QuestLocation location = locations.get(i);
 
-        String title = "Location " + (i + 1) + ": ";
         String name = location.getName();
 
-        viewHolder.title.setText(title);
         viewHolder.name.setText(name);
     }
 
@@ -44,7 +42,6 @@ public class QuestLocationAdapter extends RecyclerView.Adapter<QuestLocationAdap
 
         LocationViewHolder(View itemView) {
             super(itemView);
-            this.title = itemView.findViewById(R.id.location_item_title);
             this.name = itemView.findViewById(R.id.quest_location_name);
         }
     }
