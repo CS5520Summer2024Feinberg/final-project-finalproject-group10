@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -55,6 +56,7 @@ public class AddLocationActivity extends AppCompatActivity {
     private String currentPhotoPath;
     private Image currentImage;
     private AlertDialog progressDialog;
+    private ImageView iconImage;
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
     private static final int REQUEST_PERMISSION = 100;
@@ -69,6 +71,8 @@ public class AddLocationActivity extends AppCompatActivity {
         userId = getIntent().getStringExtra("userId");
         firebaseStorage = FirebaseStorage.getInstance();
         storageReference = firebaseStorage.getReference().child("images");
+
+        iconImage = findViewById(R.id.create_quest_picture_icon);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -145,10 +149,12 @@ public class AddLocationActivity extends AppCompatActivity {
                 File file = new File(currentPhotoPath);
                 Uri uri = Uri.fromFile(file);
                 currentImage = new Image(userId, currentPhotoPath, uri);
+                iconImage.setVisibility(ImageView.VISIBLE);
                 Toast.makeText(AddLocationActivity.this, "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
             } else if (requestCode == SELECT_FILE && data != null) {
                 Uri selectedImageUri = data.getData();
                 currentImage = new Image(userId, selectedImageUri.getPath(), selectedImageUri);
+                iconImage.setVisibility(ImageView.VISIBLE);
                 Toast.makeText(AddLocationActivity.this, "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
             }
         }

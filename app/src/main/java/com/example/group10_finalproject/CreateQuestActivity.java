@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.Manifest;
@@ -60,6 +61,7 @@ public class CreateQuestActivity extends AppCompatActivity {
     private DatabaseReference dbReference;
     private FirebaseStorage firebaseStorage;
     private StorageReference storageReference;
+    private ImageView imageIcon;
     private String currentPhotoPath;
     private Image currentImage;
     private AlertDialog progressDialog;
@@ -75,6 +77,8 @@ public class CreateQuestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_quest);
 
         locations = new ArrayList<>();
+
+        imageIcon = findViewById(R.id.create_quest_picture_icon);
 
         if (savedInstanceState != null) {
             locations = savedInstanceState.getParcelableArrayList("locations");
@@ -102,7 +106,6 @@ public class CreateQuestActivity extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-//                        locations = result.getData().getParcelableArrayListExtra("locations");
                         locations.clear();
                         locations.addAll(result.getData().getParcelableArrayListExtra("locations"));
                         adapter.notifyDataSetChanged();
@@ -227,10 +230,12 @@ public class CreateQuestActivity extends AppCompatActivity {
                 File file = new File(currentPhotoPath);
                 Uri uri = Uri.fromFile(file);
                 currentImage = new Image(userId, currentPhotoPath, uri);
+                imageIcon.setVisibility(ImageView.VISIBLE);
                 Toast.makeText(CreateQuestActivity.this, "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
             } else if (requestCode == SELECT_FILE && data != null) {
                 Uri selectedImageUri = data.getData();
                 currentImage = new Image(userId, selectedImageUri.getPath(), selectedImageUri);
+                imageIcon.setVisibility(ImageView.VISIBLE);
                 Toast.makeText(CreateQuestActivity.this, "Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
             }
         }
